@@ -1,0 +1,57 @@
+<template>
+  <main class="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+    <div class="max-w-xl w-full bg-white p-8 rounded-lg shadow">
+      <h1 class="text-2xl font-[700] mb-2">Thank you for your feedback!</h1>
+      <p class="mb-4 font-[400]">Jooga Studio has received your feedback. You can still edit your feedback or tell us more about how we did, and how we could serve you better in the future.</p>
+
+      <form @submit.prevent="submit" class="space-y-4">
+        <div>
+          <EmojiRating v-model:rating="feedback.rating" />
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <button
+            type="submit"
+            :disabled="isSubmitting || feedback.rating === 0"
+            class="px-4 py-2 rounded bg-indigo-600 text-white disabled:opacity-50"
+          >
+            {{ isSubmitting ? 'Submitting…' : 'Submit feedback' }}
+          </button>
+        </div>
+      </form>
+
+      <div v-if="submitted">
+        <div>
+          <strong>Rating:</strong> {{ feedback.rating }}
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
+
+<script setup lang="ts">
+import { reactive } from 'vue'
+import EmojiRating from '~/components/EmojiRating.vue'
+
+
+const feedback = reactive({
+    rating: 0,
+    text: '',
+    consent: {
+        publicConsent: false,
+        contactConsent: false,
+        privacyConsent: false,
+    }
+})
+
+const isSubmitting = ref(false)
+const submitted = ref(false)
+
+async function submit() {
+  submitted.value = true
+}
+</script>
+
+<style scoped>
+
+</style>
