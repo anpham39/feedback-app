@@ -9,6 +9,38 @@
           <EmojiRating v-model:rating="feedback.rating" />
         </div>
 
+        <div>
+          <label for="feedback-text">
+            Please tell us a bit more why you chose excellent?
+          </label>
+          <textarea
+            id="feedback-text"
+            v-model="feedback.text"
+            rows="4"
+            class="w-full px-3 py-2 border border-gray-300 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+
+        <div class="space-y-4">
+          <ConsentCheckbox
+            id="publicConsent"
+            label="Share my feedback publicly"
+            description="Allow Jooga Studio to display my feedback on their website"
+            v-model="feedback.consent.publicConsent"
+          />
+          <ConsentCheckbox
+            id="contactConsent"
+            label="Contact me about my feedback"
+            description="Jooga Studio may reach out to discuss my feedback"
+            v-model="feedback.consent.contactConsent"
+          />
+          <ConsentCheckbox
+            id="privacyConsent"
+            label="I agree to the privacy policy"
+            v-model="feedback.consent.privacyConsent"
+          />
+        </div>
+
         <div class="flex items-center space-x-3">
           <button
             type="submit"
@@ -30,8 +62,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import EmojiRating from '~/components/EmojiRating.vue'
+import ConsentCheckbox from '~/components/ConsentCheckbox.vue'
 
 
 const feedback = reactive({
