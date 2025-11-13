@@ -5,6 +5,9 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"Open Sans"', 'ui-sans-serif', 'system-ui']
+      },
+      colors: {
+        blue: '#0070D7'
       }
     },
   },

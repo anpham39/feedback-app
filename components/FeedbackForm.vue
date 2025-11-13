@@ -9,34 +9,39 @@
           <EmojiRating v-model:rating="feedback.rating" />
         </div>
 
-        <div>
-          <label for="feedback-text">
-            Please tell us a bit more why you chose excellent?
-          </label>
-          <textarea
-            id="feedback-text"
-            v-model="feedback.text"
-            rows="4"
-            class="w-full px-3 py-2 border border-gray-300 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+        <transition 
+            enter-active-class="transition-opacity duration-500 ease-in"
+            enter-from-class="opacity-0"
+        >   
+            <div v-if="feedback.rating">
+                <label for="feedback-text">
+                    Please tell us a bit more why you chose excellent?
+                </label>
+                <textarea
+                    v-model="feedback.text"
+                    rows="4"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+            </div>
+        </transition>
 
         <div class="space-y-4">
           <ConsentCheckbox
-            id="publicConsent"
-            label="Make the feedback public"
+            id="public-consent"
+            title="Make the feedback public"
             description="Your feedback may be displayed on Vello’s healthcare and wellbeing marketplace. In public feedback, your name (Linda K) will be shown."
             v-model="feedback.consent.publicConsent"
           />
           <ConsentCheckbox
-            id="contactConsent"
-            label="I wish that Yoga Studio will be in touch with me"
+            id="contact-consent"
+            title="I wish that Yoga Studio will be in touch with me"
             description="Contact: linda.miller@gmail.com, 050 1234567"
             v-model="feedback.consent.contactConsent"
           />
           <ConsentCheckbox
-            id="privacyConsent"
-            label="I agree to the processing of the feedback data in accordance with the Privacy Policy."
+            id="privacy-consent"
+            title="I agree to the processing of the feedback data in accordance with the Privacy Policy."
+            :is-privacy-consent="true"
             v-model="feedback.consent.privacyConsent"
           />
         </div>
@@ -44,10 +49,10 @@
         <div class="flex items-center space-x-3">
           <button
             type="submit"
-            :disabled="isSubmitting || feedback.rating === 0"
-            class="px-4 py-2 rounded bg-indigo-600 text-white disabled:opacity-50"
+            :disabled="isSubmitting || !isValidForm"
+            class="px-4 py-2 rounded bg-blue text-white disabled:opacity-50"
           >
-            {{ isSubmitting ? 'Submitting…' : 'Submit feedback' }}
+            {{ isSubmitting ? 'Submitting…' : 'Submit' }}
           </button>
         </div>
       </form>
@@ -71,10 +76,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import EmojiRating from '~/components/EmojiRating.vue'
 import ConsentCheckbox from '~/components/ConsentCheckbox.vue'
 
+const isValidForm = computed(() => feedback.rating > 0 && feedback.consent.privacyConsent)
 
 const feedback = reactive({
   rating: 0,
@@ -118,5 +124,4 @@ async function submit() {
 </script>
 
 <style scoped>
-
 </style>

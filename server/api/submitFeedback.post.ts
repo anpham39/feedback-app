@@ -2,10 +2,8 @@ import { readBody, createError } from 'h3'
 
 /**
  * POST /api/submitFeedback
- * 
  * Server-side proxy that send feedback to a Google Apps Script. 
  *
- * 
  * Request body:
  *   - rating: number (1-5)
  *   - text: string (optional feedback text)

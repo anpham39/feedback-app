@@ -8,7 +8,7 @@
         'scale-110': index + 1 === currentRating,
         'opacity-70': index + 1 !== currentRating
       }"
-      @click="$emit('update:rating', index + 1)"
+      @click.prevent="$emit('update:rating', index + 1)"
     >
       <img
         :src="currentRating === index + 1 ? emoji.activeSrc : emoji.inactiveSrc"
