@@ -1,14 +1,14 @@
 <template>
-  <main class="min-h-screen flex items-center justify-center bg-slate-50 p-6">
-    <div class="max-w-xl w-full bg-white p-8 rounded-lg shadow">
+  <div class="max-w-xl w-full bg-white p-8 rounded-lg shadow">
       <h1 class="text-2xl font-[700] mb-2">Thank you for your feedback!</h1>
       <p class="mb-4 font-[400]">Jooga Studio has received your feedback. You can still edit your feedback or tell us more about how we did, and how we could serve you better in the future.</p>
 
-      <form @submit.prevent="submit" class="space-y-4">
+      <form @submit.prevent="sendFeedback" class="space-y-4">
         <div>
           <EmojiRating v-model:rating="feedback.rating" />
         </div>
 
+        <!-- Feedback textarea, only shown when a rating is selected -->
         <transition 
             enter-active-class="transition-opacity duration-500 ease-in"
             enter-from-class="opacity-0"
@@ -25,6 +25,7 @@
             </div>
         </transition>
 
+        <!-- Consent checkboxes -->
         <div class="space-y-4">
           <ConsentCheckbox
             id="public-consent"
@@ -46,7 +47,7 @@
           />
         </div>
 
-        <div class="flex items-center space-x-3">
+        <div class="flex justify-center space-x-3">
           <button
             type="submit"
             :disabled="isSubmitting || !isValidForm"
@@ -55,30 +56,24 @@
             {{ isSubmitting ? 'Submitting…' : 'Submit' }}
           </button>
         </div>
-      </form>
+    </form>
 
-      <div class="mt-4">
-        <div v-if="error" class="p-3 rounded bg-red-50 border border-red-200 text-red-800">
-          <strong>Error:</strong>
-          <div class="mt-1">{{ error }}</div>
-        </div>
-
-        <div v-else-if="submitted" class="p-3 rounded bg-green-50 border border-green-200 text-green-800">
-          <div class="mt-1">
-            <strong>Rating:</strong> {{ feedback.rating }}
-            <strong>Text:</strong> {{ feedback.text }}
-            <strong>Consent:</strong> {{ feedback.consent }}
-        </div>
-    </div>
+    <!-- Error message -->
+    <div class="mt-4">
+      <div v-if="error" class="p-3 rounded bg-red-50 border border-red-200 text-red-800">
+        <strong>Error:</strong>
+        <div class="mt-1">{{ error }}</div>
       </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue'
 import EmojiRating from '~/components/EmojiRating.vue'
 import ConsentCheckbox from '~/components/ConsentCheckbox.vue'
+
+const emit = defineEmits(['submit'])
 
 const isValidForm = computed(() => feedback.rating > 0 && feedback.consent.privacyConsent)
 
@@ -93,28 +88,23 @@ const feedback = reactive({
 })
 
 const isSubmitting = ref(false)
-const submitted = ref(false)
 const error = ref<string | null>(null)
 
-async function submit() {
+async function sendFeedback() {
   // reset
   error.value = null
-  submitted.value = false
   isSubmitting.value = true
 
-  const payload = {
-    rating: feedback.rating,
-    text: feedback.text,
-    consent: feedback.consent,
-    timestamp: new Date().toISOString()
-  }
-
   try {
-    await $fetch('/api/submitFeedback', {
-      method: 'POST',
-      body: payload
-    })
-    submitted.value = true
+    // await $fetch('/api/submitFeedback', {
+    //   method: 'POST',
+    //   body: {
+    //     ...feedback,
+    //     timestamp: new Date().toISOString()
+    //   }
+    // })
+
+    emit('submit', feedback)
   } catch (err: any) {
     error.value = err?.message || 'Submission failed'
   } finally {
