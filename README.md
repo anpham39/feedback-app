@@ -1,75 +1,105 @@
-# Nuxt Minimal Starter
+# Feedback App
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A responsive feedback application built with Nuxt 3, TypeScript and Tailwind CSS.
 
-## Setup
+The app submits user feedback to a [Google Sheets](https://docs.google.com/spreadsheets/d/1WHndOHu0oWHfRtse-vS2WBfvm7uS9QnbjQXHV_BKwi4/edit?gid=0#gid=0) using a Google Apps Script web app as a lightweight backend.
 
-Make sure to install dependencies:
+## Submit feedback endpoint
+```
+  * POST /api/submitFeedback
+  * Server-side proxy that send feedback to a Google Apps Script. 
+  *
+  * Request body:
+  *   - rating: RatingValue ('Poor' | 'Fair' | 'Satisfactory' | 'Good' | 'Excellent')
+  *   - text: string (optional feedback text)
+  *   - consent: object with publicConsent, contactConsent, privacyConsent booleans
+  *   - timestamp: ISO timestamp
+  *   - userId: string (ID of the user submitting feedback) 
+  * 
+  * Response:
+  *   - 200 (Success): Returns feedbackId
+  *   - 500: Endpoint not configured
+  *   - 502: Google Apps Script request failed
+ ```
 
+## Script added to Google Apps Script to handle POST API logic:
+
+```javascript
+function doPost(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
+
+  if (!sheet) throw new Error('Sheet "Feedback" not found');
+
+  const feedbackId = Utilities.getUuid();
+
+  const payload = JSON.parse(e.postData.contents);
+  Logger.log(e);
+  Logger.log(payload);
+
+  sheet.appendRow([
+    feedbackId,
+    payload.timestamp,
+    payload.userId,
+    payload.rating,
+    payload.text || '',
+    payload.consent.publicConsent ? 'Yes' : 'No',
+    payload.consent.contactConsent ? 'Yes' : 'No',
+    payload.consent.privacyConsent ? 'Yes' : 'No',
+  ]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ feedbackId }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+```
+
+## Installation
+
+1. Clone the repository:
 ```bash
-# npm
+git clone <repository-url>
+cd feedback-app
+```
+
+2. Install dependencies:
+```bash
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
+3. Start the development server:
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+4. Open your browser and navigate to:
+```
+http://localhost:3000
 ```
 
-Locally preview production build:
+## Project Structure
 
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+feedback-app/
+├── app.vue                # Root component, display feedback form or feedback received view based on submit stage
+├── nuxt.config.ts
+├── tailwind.config.js
+├── assets/
+│   └── css/
+│       └── main.css
+├── components/
+│   ├── ConsentCheckbox.vue    # Reusable consent checkbox
+│   ├── EmojiRating.vue        # 5-level emoji rating selector
+│   ├── FeedbackForm.vue       # Main feedback form, shows text feedback field after emoju selected
+│   └── FeedbackReceived.vue   # Confirmation screen after submit feedback
+├── public/
+│   ├── logo.png              
+│   ├── checked.png           # Checkbox icon
+│   └── [rating]-*.png        # Emoji images (active/inactive)
+├── server/
+│   └── api/
+│       └── submitFeedback.post.ts  # API endpoint for submissions
+├── types/
+│   └── feedback.ts           # Type definitions for feedback and rating
+└── utils/
+    └── user.ts               # Mock user data utilities
+```
