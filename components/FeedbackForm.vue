@@ -1,84 +1,86 @@
 <template>
-  <div class="max-w-xl w-full bg-white p-8 rounded-lg shadow">
-      <h1 class="text-2xl font-[700] mb-2">Thank you for your feedback!</h1>
-      <p class="mb-4 font-[400]">Jooga Studio has received your feedback. You can still edit your feedback or tell us more about how we did, and how we could serve you better in the future.</p>
+    <h1 class="text-[26px] font-[700] mb-2">Thank you for your feedback!</h1>
+    <p class="font-[400]">Jooga Studio has received your feedback. You can still edit your feedback or tell us more about how we did, and how we could serve you better in the future.</p>
 
-      <form @submit.prevent="sendFeedback" class="space-y-4">
-        <div>
-          <EmojiRating v-model:rating="feedback.rating" />
-        </div>
+    <form @submit.prevent="sendFeedback">
+      <div class="mb-4">
+        <EmojiRating v-model:rating="feedback.rating" />
+      </div>
 
-        <!-- Feedback textarea, only shown when a rating is selected -->
-        <transition 
-            enter-active-class="transition-opacity duration-500 ease-in"
-            enter-from-class="opacity-0"
-        >   
-            <div v-if="feedback.rating">
-                <label for="feedback-text">
-                    Please tell us a bit more why you chose excellent?
-                </label>
-                <textarea
-                    v-model="feedback.text"
-                    rows="4"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-            </div>
-        </transition>
+      <!-- Feedback textarea, only shown when a rating is selected -->
+      <transition 
+          enter-active-class="transition-opacity duration-500 ease-in"
+          enter-from-class="opacity-0"
+      >   
+          <div v-if="feedback.rating" class="mb-10">
+              <label for="feedback-text" class="font-semibold text-[16px]">
+                  Please tell us a bit more why you chose {{feedback.rating.toLocaleLowerCase()}}?
+              </label>
+              <textarea
+                  id="feedback-text"
+                  v-model="feedback.text"
+                  rows="4"
+                  class="w-full px-3 py-2 mt-2 border border-gray-300 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+          </div>
+      </transition>
 
-        <!-- Consent checkboxes -->
-        <div class="space-y-4">
-          <ConsentCheckbox
-            id="public-consent"
-            title="Make the feedback public"
-            description="Your feedback may be displayed on Vello’s healthcare and wellbeing marketplace. In public feedback, your name (Linda K) will be shown."
-            v-model="feedback.consent.publicConsent"
-          />
-          <ConsentCheckbox
-            id="contact-consent"
-            title="I wish that Yoga Studio will be in touch with me"
-            description="Contact: linda.miller@gmail.com, 050 1234567"
-            v-model="feedback.consent.contactConsent"
-          />
-          <ConsentCheckbox
-            id="privacy-consent"
-            title="I agree to the processing of the feedback data in accordance with the Privacy Policy."
-            :is-privacy-consent="true"
-            v-model="feedback.consent.privacyConsent"
-          />
-        </div>
+      <!-- Consent checkboxes -->
+      <div class="mb-10">
+        <ConsentCheckbox
+          id="public-consent"
+          title="Make the feedback public"
+          description="Your feedback may be displayed on Vello's healthcare and wellbeing marketplace. In public feedback, your name (Linda K) will be shown."
+          v-model="feedback.consent.publicConsent"
+        />
+        <ConsentCheckbox
+          id="contact-consent"
+          title="I wish that Yoga Studio will be in touch with me"
+          description="Contact: linda.miller@gmail.com, 050 1234567"
+          v-model="feedback.consent.contactConsent"
+        />
+        <ConsentCheckbox
+          id="privacy-consent"
+          title="I agree to the processing of the feedback data in accordance with the Privacy Policy."
+          :is-privacy-consent="true"
+          v-model="feedback.consent.privacyConsent"
+        />
+      </div>
 
-        <div class="flex justify-center space-x-3">
-          <button
-            type="submit"
-            :disabled="isSubmitting || !isValidForm"
-            class="px-4 py-2 rounded bg-blue text-white disabled:opacity-50"
-          >
-            {{ isSubmitting ? 'Submitting…' : 'Submit' }}
-          </button>
-        </div>
+      <div class="flex justify-center">
+        <button
+          type="submit"
+          :disabled="isSubmitting || !isValidForm"
+          class="submit-button"
+        >
+          {{ isSubmitting ? 'Sending' : 'Send feedback' }}
+        </button>
+      </div>
     </form>
 
     <!-- Error message -->
-    <div class="mt-4">
+    <div class="mb-10">
       <div v-if="error" class="p-3 rounded bg-red-50 border border-red-200 text-red-800">
         <strong>Error:</strong>
         <div class="mt-1">{{ error }}</div>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue'
 import EmojiRating from '~/components/EmojiRating.vue'
 import ConsentCheckbox from '~/components/ConsentCheckbox.vue'
+import type { FeedbackData } from '~/types/feedback'
 
-const emit = defineEmits(['submit'])
+const emit = defineEmits<{
+  submit: [feedback: FeedbackData]
+}>()
 
-const isValidForm = computed(() => feedback.rating > 0 && feedback.consent.privacyConsent)
+const isValidForm = computed(() => feedback.rating !== '' && feedback.consent.privacyConsent)
 
-const feedback = reactive({
-  rating: 0,
+const feedback = reactive<FeedbackData>({
+  rating: '',
   text: '',
   consent: {
     publicConsent: false,

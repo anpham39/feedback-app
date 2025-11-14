@@ -1,13 +1,17 @@
 <template>
-  <main class="min-h-screen flex items-center justify-center bg-slate-50 p-6">
-    <FeedbackForm v-if="!submitted" @submit="handleSubmit" />
-    
-    <FeedbackReceived 
-      v-else 
-        :feedback="submittedFeedback"
-        @done="handleDone"
-    />
-  </main>
+  <div class="flex items-center justify-center md:bg-slate-50 md:p-6 md:min-h-screen">
+    <div class="w-full bg-white px-14 py-12 md:rounded-lg md:shadow md:max-w-3xl">
+      <img src="/logo.png" alt="Yoga Studio" class="h-7 mb-10" />
+  
+      <FeedbackForm v-if="!submitted" @submit="handleSubmit" />
+      
+      <FeedbackReceived 
+        v-else 
+          :feedback="submittedFeedback"
+          @done="handleDone"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

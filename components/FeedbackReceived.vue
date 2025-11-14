@@ -50,10 +50,11 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import type { RatingValue } from '~/types/feedback'
 
 const props = defineProps<{
   feedback: {
-    rating: number
+    rating: RatingValue | ''
     text: string
     consent: {
       publicConsent: boolean
@@ -62,17 +63,28 @@ const props = defineProps<{
   }
 }>()
 
+defineEmits<{
+  (e: 'done'): void
+}>()
+
 // Map rating to emoji
-const emojiMap: Record<number, { src: string; alt: string }> = {
-  1: { src: '/poor-active.png', alt: 'Poor' },
-  2: { src: '/fair-active.png', alt: 'Fair' },
-  3: { src: '/satisfactory-active.png', alt: 'Satisfactory' },
-  4: { src: '/good-active.png', alt: 'Good' },
-  5: { src: '/excellent-active.png', alt: 'Excellent' }
+const emojiMap: Record<RatingValue, { src: string; alt: string }> = {
+  'Poor': { src: '/poor-active.png', alt: 'Poor' },
+  'Fair': { src: '/fair-active.png', alt: 'Fair' },
+  'Satisfactory': { src: '/satisfactory-active.png', alt: 'Satisfactory' },
+  'Good': { src: '/good-active.png', alt: 'Good' },
+  'Excellent': { src: '/excellent-active.png', alt: 'Excellent' }
 }
 
-const emojiSrc = computed(() => emojiMap[props.feedback.rating]?.src || '')
-const emojiAlt = computed(() => emojiMap[props.feedback.rating]?.alt || '')
+const emojiSrc = computed(() => {
+  if (props.feedback.rating === '') return ''
+  return emojiMap[props.feedback.rating]?.src || ''
+})
+
+const emojiAlt = computed(() => {
+  if (props.feedback.rating === '') return ''
+  return emojiMap[props.feedback.rating]?.alt || ''
+})
 </script>
 
 <style scoped>
