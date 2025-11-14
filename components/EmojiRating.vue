@@ -1,20 +1,22 @@
 <template>
-  <div class="grid grid-cols-5 gap-3 my-10" aria-label="Emoji rating">
+  <div class="grid grid-cols-5 gap-3 my-12" aria-label="Emoji rating">
     <button
       v-for="(emoji, index) in emojis"
       :key="index"
-      :class="[
-        'p-3 rounded-lg border-2 transition-all w-full h-[124px] flex flex-col items-center justify-center gap-2',
-        emoji.value === currentRating
-          ? (getBorderColorActive(emoji.value) + ' button-active')
-          : 'border border-[#CCD7DF6E]'
-      ]"
+      class="p-3 rounded-lg border border-gray transition-all w-full h-[124px] flex flex-col items-center justify-center gap-2"
+      :style="emoji.value === currentRating 
+        ? getActiveButtonStyle(emoji.value) 
+        : {}"
       @click.prevent="$emit('update:rating', emoji.value)"
     >
       <img
         :src="currentRating === emoji.value ? emoji.activeSrc : emoji.inactiveSrc"
         :alt="emoji.alt"
         class="w-auto h-[60px] object-contain"
+        :style="{ 
+          filter: index === 4 && emoji.value !== currentRating
+          ? 'saturate(0.05)' 
+          : 'none' }"
       />
       <span 
         :class="[
@@ -46,20 +48,22 @@ const emojis = ratingValues.map(value => ({
   alt: value,
 }))
 
-function getBorderColorActive(rating: RatingValue): string {
-  const colors: Record<RatingValue, string> = {
-    'Poor': 'border-[#FDE6EF]',
-    'Fair': 'border-[#FCE2DC]',
-    'Satisfactory': 'border-[#FDF4D4]',
-    'Good': 'border-[#E9F5DF]',
-    'Excellent': 'border-[#E7FAF6]'
+// Color mapping for each rating
+const ratingColors: Record<RatingValue, string> = {
+  'Poor': '#FDE6EF',
+  'Fair': '#FCE2DC',
+  'Satisfactory': '#FDF4D4',
+  'Good': '#E9F5DF',
+  'Excellent': '#E7FAF6'
+}
+
+function getActiveButtonStyle(rating: RatingValue) {
+  return { 
+    boxShadow: `0 7px 14px -4px ${ratingColors[rating]}`,
+    borderColor: `${ratingColors[rating]}`,
+    borderWidth: '2px'
   }
-  return colors[rating] || 'border-gray-300'
 }
 </script>
 
-<style scoped>
-.button-active {
-    box-shadow: 0 7px 14px -4px #FDE6EF;
-}
-</style>
+

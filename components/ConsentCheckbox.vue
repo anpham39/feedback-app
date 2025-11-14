@@ -5,10 +5,10 @@
       :id="id"
       :checked="modelValue"
       @change="$emit('update:modelValue', ($event.target as HTMLInputElement).checked)"
-      class="checkbox mt-1 w-5 h-5 cursor-pointer"
+      class="checkbox"
     />
     <label :for="id" class="cursor-pointer flex-1">
-        <p v-if="isPrivacyConsent" class="font-semibold text-gray-900 mt-0.5">
+        <p v-if="isPrivacyConsent" class="font-semibold mt-0.5">
             I agree to the processing of the feedback data in accordance with the
             <a 
             href="https://example.com/privacy-policy"
@@ -19,8 +19,8 @@
             Privacy Policy
             </a>
         </p>
-        <p v-else class="font-semibold text-gray-900">{{ title }}</p>
-        <p class="text-sm text-gray-600 mt-0.5">
+        <p v-else class="font-semibold">{{ title }}</p>
+        <p class="text-[#545F67] mt-0.5">
             {{ description }}
         </p>
     </label>
@@ -46,16 +46,20 @@ defineEmits<{
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  border: 1px solid #CCD7DF;
+  border: 1px solid var(--grey);
   border-radius: 4px;
   background-color: white;
   display: inline-block;
   position: relative;
+  margin-top: 0.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
 }
 
 .checkbox:checked {
-  background-color: blue;
-  border-color: blue;
+  background-color: var(--blue);
+  border-color: var(--blue);
 }
 
 .checkbox:checked::after {
@@ -71,7 +75,6 @@ defineEmits<{
 }
 
 .checkbox:focus {
-  outline: 2px solid #93c5fd;
-  outline-offset: 2px;
+  outline: none;
 }
 </style>

@@ -1,4 +1,5 @@
 <template>
+  <div>
     <h1 class="text-[26px] font-[700] mb-2">Thank you for your feedback!</h1>
     <p class="font-[400]">Jooga Studio has received your feedback. You can still edit your feedback or tell us more about how we did, and how we could serve you better in the future.</p>
 
@@ -12,7 +13,7 @@
           enter-active-class="transition-opacity duration-500 ease-in"
           enter-from-class="opacity-0"
       >   
-          <div v-if="feedback.rating" class="mb-10">
+          <div v-if="feedback.rating">
               <label for="feedback-text" class="font-semibold text-[16px]">
                   Please tell us a bit more why you chose {{feedback.rating.toLocaleLowerCase()}}?
               </label>
@@ -20,13 +21,13 @@
                   id="feedback-text"
                   v-model="feedback.text"
                   rows="4"
-                  class="w-full px-3 py-2 mt-2 border border-gray-300 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  class="w-full px-4 py-2 mt-4 border border-gray rounded-[4px] focus:outline-none focus:ring-2 focus:ring-blue"
               />
           </div>
       </transition>
 
       <!-- Consent checkboxes -->
-      <div class="mb-10">
+      <div class="mt-12">
         <ConsentCheckbox
           id="public-consent"
           title="Make the feedback public"
@@ -47,7 +48,7 @@
         />
       </div>
 
-      <div class="flex justify-center">
+      <div class="flex justify-center mt-20 mb-10">
         <button
           type="submit"
           :disabled="isSubmitting || !isValidForm"
@@ -59,12 +60,13 @@
     </form>
 
     <!-- Error message -->
-    <div class="mb-10">
+    <div class="mb-12">
       <div v-if="error" class="p-3 rounded bg-red-50 border border-red-200 text-red-800">
         <strong>Error:</strong>
         <div class="mt-1">{{ error }}</div>
       </div>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">

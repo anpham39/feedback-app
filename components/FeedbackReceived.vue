@@ -1,49 +1,42 @@
 <template>
-  <div class="max-w-xl w-full bg-white p-8 rounded-lg shadow">
-    <h2 class="text-2xl font-[700] mb-2">Thank you! We received your feedback!</h2>
+  <div>
+    <h1 class="text-[26px] font-semibold">Thank you! We received your feedback!</h1>
     
-    <div class="space-y-4">
-      <!-- Chosen emoji rating -->
-      <div class="flex items-center gap-3">
-        <img 
-          :src="emojiSrc" 
-          :alt="emojiAlt"
-          class="w-10 h-10 object-contain"
-        />
-      </div>
+    <!-- Feedback display box -->
+    <div class="py-8 px-10 mt-12 mb-10 border border-gray rounded-lg">
+      <img 
+        :src="emojiSrc" 
+        :alt="emojiAlt"
+        class=""
+      />
 
-      <!-- Feedback text -->
-      <div v-if="feedback.text">
-        <p class="text-sm font-medium text-gray-700 mb-1">Your feedback:</p>
-        <p class="text-sm text-gray-600 bg-white p-2 rounded border border-gray-200">
+      <div v-if="feedback.text" class="w-full">
+        <p class="w-full break-words my-6">
           {{ feedback.text }}
         </p>
       </div>
+    </div>
 
-      <!-- Chosen consent information -->
-      <div class="text-sm text-gray-600 space-y-1">
-        <div class="flex items-center gap-2">
-          <img src="/checked.png" alt="✓" class="w-4 h-4" />
-          <span v-if="feedback.consent.publicConsent">Feedback is public</span>
-          <span v-else>Feedback is not public</span>
-        </div>
-        
-        <div class="flex items-center gap-2">
-          <img src="/checked.png" alt="✓" class="w-4 h-4" />
-          <span v-if="feedback.consent.contactConsent">Yoga Studio will be in touch</span>
-          <span v-else>Yoga Studio will not be in touch</span>
-        </div>
+    <!-- Chosen consent information -->
+    <div class="px-12">
+      <div class="flex items-center gap-3 mb-4">
+        <img src="/checked.png" alt="✓" class="w-4 h-4" />
+        <span class="font-semibold ml-2">Feedback is {{feedback.consent.publicConsent ? 'public' : 'not public'}}</span>
       </div>
+      
+      <div class="flex items-center gap-x-2">
+        <img src="/checked.png" alt="✓" class="w-4 h-4" />
+        <span class="font-semibold ml-2">Yoga Studio will {{feedback.consent.contactConsent ? 'be in touch' : 'not be in touch'}}</span>
+      </div>
+    </div>    
 
-      <!-- Done button -->
-       <div class="flex justify-center">
-         <button
-           @click="$emit('done')"
-           class="px-4 py-2 rounded bg-blue text-white disabled:opacity-50"
-         >
-           Done
-         </button>
-       </div>
+    <div class="flex justify-center mt-20 mb-10">
+      <button
+        @click="$emit('done')"
+        class="submit-button"
+      >
+        Done
+      </button>
     </div>
   </div>
 </template>
@@ -63,9 +56,6 @@ const props = defineProps<{
   }
 }>()
 
-defineEmits<{
-  (e: 'done'): void
-}>()
 
 // Map rating to emoji
 const emojiMap: Record<RatingValue, { src: string; alt: string }> = {

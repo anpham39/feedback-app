@@ -7,7 +7,8 @@ export default {
         sans: ['"Open Sans"', 'ui-sans-serif', 'system-ui']
       },
       colors: {
-        blue: '#0070D7'
+        blue: '#0070D7',
+        gray: '#CCD7DF'
       }
     },
   },
