@@ -3,7 +3,7 @@
     <button
       v-for="(emoji, index) in emojis"
       :key="index"
-      class="p-3 rounded-lg border border-gray transition-all w-full h-[124px] flex flex-col items-center justify-center gap-2"
+      class="p-2 sm:p-3 rounded-lg border border-gray transition-all w-full h-24 sm:h-36 flex flex-col items-center justify-center gap-2"
       :style="emoji.value === currentRating 
         ? getActiveButtonStyle(emoji.value) 
         : {}"
@@ -12,7 +12,7 @@
       <img
         :src="currentRating === emoji.value ? emoji.activeSrc : emoji.inactiveSrc"
         :alt="emoji.alt"
-        class="w-auto h-[60px] object-contain"
+        class="w-auto h-2/3 object-contain"
         :style="{ 
           filter: index === 4 && emoji.value !== currentRating
           ? 'saturate(0.05)' 
@@ -20,7 +20,7 @@
       />
       <span 
         :class="[
-          'text-xs font-semibold my-1',
+          'text-xs font-semibold my-1 hidden sm:block',
           emoji.value === currentRating ? 'opacity-100' : 'opacity-60'
         ]"
         style="font-size: 12px;"
