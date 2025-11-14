@@ -14,6 +14,7 @@
         <p class="w-full break-words my-6">
           {{ feedback.text }}
         </p>
+        <p v-if="feedback.consent.publicConsent" class="font-light text-[#545F67]">{{ user.name }}.</p>
       </div>
     </div>
 
@@ -21,12 +22,16 @@
     <div class="px-12">
       <div class="flex items-center gap-3 mb-4">
         <img src="/checked.png" alt="✓" class="w-4 h-4" />
-        <span class="font-semibold ml-2">Feedback is {{feedback.consent.publicConsent ? 'public' : 'not public'}}</span>
+        <span class="font-semibold ml-2">
+          Feedback is {{feedback.consent.publicConsent ? 'public' : 'not public'}}
+        </span>
       </div>
       
       <div class="flex items-center gap-x-2">
         <img src="/checked.png" alt="✓" class="w-4 h-4" />
-        <span class="font-semibold ml-2">Yoga Studio will {{feedback.consent.contactConsent ? 'be in touch' : 'not be in touch'}}</span>
+        <span class="font-semibold ml-2">
+          Yoga Studio will {{feedback.consent.contactConsent ? 'be in touch' : 'not be in touch'}}
+        </span>
       </div>
     </div>    
 
@@ -43,17 +48,12 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import type { FeedbackData } from '~/types/feedback'
 import type { RatingValue } from '~/types/feedback'
+import { user } from '~/utils/user'
 
 const props = defineProps<{
-  feedback: {
-    rating: RatingValue | ''
-    text: string
-    consent: {
-      publicConsent: boolean
-      contactConsent: boolean
-    }
-  }
+  feedback: FeedbackData
 }>()
 
 
@@ -67,12 +67,12 @@ const emojiMap: Record<RatingValue, { src: string; alt: string }> = {
 }
 
 const emojiSrc = computed(() => {
-  if (props.feedback.rating === '') return ''
+  if (!props.feedback.rating) return ''
   return emojiMap[props.feedback.rating]?.src || ''
 })
 
 const emojiAlt = computed(() => {
-  if (props.feedback.rating === '') return ''
+  if (!props.feedback.rating) return ''
   return emojiMap[props.feedback.rating]?.alt || ''
 })
 </script>

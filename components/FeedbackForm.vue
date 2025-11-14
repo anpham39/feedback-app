@@ -31,7 +31,7 @@
         <ConsentCheckbox
           id="public-consent"
           title="Make the feedback public"
-          description="Your feedback may be displayed on Vello's healthcare and wellbeing marketplace. In public feedback, your name (Linda K) will be shown."
+          :description="`Your feedback may be displayed on Vello's healthcare and wellbeing marketplace. In public feedback, your name (${user.name}) will be shown.`"
           v-model="feedback.consent.publicConsent"
         />
         <ConsentCheckbox
@@ -74,6 +74,7 @@ import { reactive, ref, computed } from 'vue'
 import EmojiRating from '~/components/EmojiRating.vue'
 import ConsentCheckbox from '~/components/ConsentCheckbox.vue'
 import type { FeedbackData } from '~/types/feedback'
+import { user } from '~/utils/user'
 
 const emit = defineEmits<{
   submit: [feedback: FeedbackData]
@@ -95,20 +96,22 @@ const isSubmitting = ref(false)
 const error = ref<string | null>(null)
 
 async function sendFeedback() {
-  // reset
   error.value = null
   isSubmitting.value = true
 
   try {
-    // await $fetch('/api/submitFeedback', {
-    //   method: 'POST',
-    //   body: {
-    //     ...feedback,
-    //     timestamp: new Date().toISOString()
-    //   }
-    // })
+    const result = await $fetch<{ feedbackId: string }>('/api/submitFeedback', {
+      method: 'POST',
+      body: {
+        ...feedback,
+        userId: user.value.id,
+        timestamp: new Date().toISOString()
+      }
+    })
 
     emit('submit', feedback)
+    
+    return result.feedbackId;
   } catch (err: any) {
     error.value = err?.message || 'Submission failed'
   } finally {

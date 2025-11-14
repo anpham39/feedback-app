@@ -13,6 +13,6 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     // Server-only config, not exposed to client
-    feedbackEndpoint: 'https://script.google.com/macros/s/AKfycbxdTj6g1qcbJDohzdrTsVEzL_WxbhahOuihFPUsqP2YcKEnCeJ4eoHDsOH6S2Epl7Zn/exec'
+    feedbackEndpoint: 'https://script.google.com/macros/s/AKfycbyVWuw5hlbgbbYPMHfDLF4ARWjArUufWL8JqIVx3HYsFj95gKpyEFi9_2OGuAB8NptW/exec'
   }
 })

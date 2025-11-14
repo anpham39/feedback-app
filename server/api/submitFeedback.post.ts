@@ -1,19 +1,20 @@
 import { readBody, createError } from 'h3'
 
 /**
- * POST /api/submitFeedback
- * Server-side proxy that send feedback to a Google Apps Script. 
- *
- * Request body:
- *   - rating: number (1-5)
- *   - text: string (optional feedback text)
- *   - consent: object with publicConsent, contactConsent, privacyConsent booleans
- *   - timestamp: timestamp
- * 
- * Response:
- *   - 200 (Success): Returns feedback ID
- *   - 500: Endpoint not configured
- *   - 502: Google Apps Script request failed
+  * POST /api/submitFeedback
+  * Server-side proxy that send feedback to a Google Apps Script. 
+  *
+  * Request body:
+  *   - rating: RatingValue ('Poor' | 'Fair' | 'Satisfactory' | 'Good' | 'Excellent')
+  *   - text: string (optional feedback text)
+  *   - consent: object with publicConsent, contactConsent, privacyConsent booleans
+  *   - timestamp: ISO timestamp
+  *   - userId: string (ID of the user submitting feedback) 
+  * 
+  * Response:
+  *   - 200 (Success): Returns feedbackId
+  *   - 500: Endpoint not configured
+  *   - 502: Google Apps Script request failed
  */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

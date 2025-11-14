@@ -5,7 +5,7 @@
 
       <Transition name="fade" mode="out-in">
         <FeedbackForm
-          v-if="!submitted"
+          v-if="!submittedFeedback"
           key="form"
           @submit="handleSubmit"
         />
@@ -25,17 +25,15 @@
 import { ref } from 'vue'
 import FeedbackForm from '~/components/FeedbackForm.vue'
 import FeedbackReceived from '~/components/FeedbackReceived.vue'
+import type { FeedbackData } from '~/types/feedback'
 
-const submitted = ref(false)
-const submittedFeedback = ref<any>(null)
+const submittedFeedback = ref<FeedbackData | null>(null)
 
-function handleSubmit(feedback: any) {
+function handleSubmit(feedback: FeedbackData) {
   submittedFeedback.value = feedback
-  submitted.value = true
 }
 
 function handleDone() {
-  submitted.value = false
   submittedFeedback.value = null
 }
 </script>
