@@ -37,7 +37,7 @@
         <ConsentCheckbox
           id="contact-consent"
           title="I wish that Yoga Studio will be in touch with me"
-          description="Contact: linda.miller@gmail.com, 050 1234567"
+          :description="`Contact: ${user.email}, ${user.phone}`"
           v-model="feedback.consent.contactConsent"
         />
         <ConsentCheckbox
